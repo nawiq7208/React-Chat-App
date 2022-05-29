@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import Pengaturan from "./chat";
-import Chat from "./pengaturan";
+import Pengaturan from "../private/pengaturan";
+import Chat from "../private/chat";
 
 export default function Private() {
   return (
