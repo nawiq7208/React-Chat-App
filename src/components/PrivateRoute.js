@@ -4,7 +4,7 @@ import { useFirebase } from "./FirebaseProvider";
 
 export default function Private({ component: Component, ...restProps }) {
   const { user } = useFirebase();
-  const isAuthenticated = true;
+
   return (
     <Route
       {...restProps}
