@@ -25,7 +25,7 @@ export default function Registrasi() {
             <img src={logo} alt="logo" />
           </div>
           <Container maxWidth="xs">
-            <Paper className={classes.Paper}>
+            <Paper className={classes.paper}>
               <Typography variant="h5" component="h1" className={classes.title}>
                 Buat Akun Baru
               </Typography>
