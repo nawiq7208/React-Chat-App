@@ -1,11 +1,30 @@
 import { makeStyles } from "@material-ui/core/styles";
+import bg from "../../images/bg.png";
 
 export default makeStyles((theme) => ({
   daftarBlock: {
+    backgroundImage: `url(${bg})`,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
     width: "100%",
     height: 320,
     borderRadius: "0 0 100% 100%",
-    position: "relative"
+    position: "relative",
+    "&:before": {
+      content: '""',
+      backgroundImage:
+        "radial-gradient(50% 42%, " +
+        theme.palette.primary.light +
+        " 50%, " +
+        theme.palette.primary.main +
+        " 99%)",
+      opacity: ".9",
+      width: "100%",
+      height: 320,
+      position: "absolute",
+      top: 0
+    }
   },
   daftarBox: {
     position: "relative",
