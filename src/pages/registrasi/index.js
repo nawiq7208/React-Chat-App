@@ -24,7 +24,7 @@ export default function Registrasi() {
           <Container maxWidth="xs">
             <Paper className={classes.Paper}>
               <Typography variant="h5" component="h1" className={classes.title}>
-                {/* Buat Akun Baru */}
+                Buat Akun Baru
               </Typography>
               <form>
                 <TextField
