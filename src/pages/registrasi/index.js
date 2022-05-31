@@ -1,5 +1,6 @@
 import React from "react";
 import useStyles from "./styles";
+import logo from "../../images/logo.png";
 import {
   TextField,
   Button,
@@ -20,7 +21,9 @@ export default function Registrasi() {
       </Button> */}
       <div className={classes.daftarBlock}>
         <div className={classes.daftarBox}>
-          <div className={classes.logoBox}>{/* untuk logo */}</div>
+          <div className={classes.logoBox}>
+            <img src={logo} alt="logo" />
+          </div>
           <Container maxWidth="xs">
             <Paper className={classes.Paper}>
               <Typography variant="h5" component="h1" className={classes.title}>

@@ -23,7 +23,10 @@ export default makeStyles((theme) => ({
       width: "100%",
       height: 320,
       position: "absolute",
-      top: 0
+      top: 0,
+      left: 0,
+      borderRadius: "0 0 100% 100%",
+      zIndex: 1
     }
   },
   daftarBox: {
