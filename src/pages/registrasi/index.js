@@ -7,9 +7,11 @@ import {
   Container,
   Paper,
   Grid,
-  Typography
+  Typography,
+  Switch
 } from "@material-ui/core";
 import isEmail from "validator/lib/isEmail";
+import { auth, firestore, FieldValue } from "../../components/FirebaseProvider";
 
 export default function Registrasi() {
   const classes = useStyles();
@@ -41,10 +43,18 @@ export default function Registrasi() {
     } else if (!isEmail(form.email)) {
       newErrors.email = "email tidak valid";
     }
+    if (!form.password) {
+      newErrors.password = "password wajib di isi";
+    }
+    if (!form.ulangi_password) {
+      newErrors.ulangi_password = "ulangi password wajib di isi";
+    } else if (form.ulangi_password !== form.password) {
+      newErrors.ulangi_password = "ulangi password tidak sama dengan password";
+    }
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const findErrors = validate();
@@ -52,6 +62,40 @@ export default function Registrasi() {
     console.log(Object.values(findErrors));
     if (Object.values(findErrors).some((message) => message !== "")) {
       setError(findErrors);
+    } else {
+      try {
+        const { user } = await auth.createUserWithEmailAndPassword(
+          form.email,
+          form.password
+        );
+
+        await firestore.doc(`/profiles/${user.uid}`).set({
+          nama: form.nama,
+          createdAt: FieldValue.serverTimestamp()
+        });
+      } catch (e) {
+        let newError = {};
+
+        switch (e.code) {
+          case "auth/email-already-in-use":
+            newError.email = "Email sudah terdaftar";
+            break;
+          case "auth/invalid-email":
+            newError.email = "Email tidak valid";
+            break;
+          case "auth/weak-password":
+            newError.email = "Password lemah";
+            break;
+          case "auth/operation-not-allowed":
+            newError.email = "Metode Email dan Password tidak didukung";
+            break;
+          default:
+            newError.email = "Terjadi kesalahan silahkan dicoba lagi";
+            break;
+        }
+
+        setError(newError);
+      }
     }
   };
 
@@ -86,7 +130,7 @@ export default function Registrasi() {
                 id="email"
                 type="email"
                 name="email"
-                label="email"
+                label="Email"
                 margin="normal"
                 fullWidth
                 required
@@ -100,7 +144,7 @@ export default function Registrasi() {
                 id="password"
                 type="password"
                 name="password"
-                label="password"
+                label="Password"
                 autoComplete="new-password"
                 margin="normal"
                 fullWidth
@@ -108,12 +152,14 @@ export default function Registrasi() {
                 variant="outlined"
                 value={form.password}
                 onChange={handleChange}
+                error={error.password ? true : false}
+                helperText={error.password}
               />
               <TextField
                 id="ulangi_password"
                 type="password"
                 name="ulangi_password"
-                label="ulangi password"
+                label="Ulangi Password"
                 autoComplete="new-password"
                 margin="normal"
                 fullWidth
@@ -121,6 +167,8 @@ export default function Registrasi() {
                 variant="outlined"
                 value={form.ulangi_password}
                 onChange={handleChange}
+                error={error.ulangi_password ? true : false}
+                helperText={error.ulangi_password}
               />
               <Grid container className={classes.buttons}>
                 <Grid item xs>

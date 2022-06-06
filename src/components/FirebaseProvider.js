@@ -3,10 +3,15 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import firebaseConfig from "../config/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import "firebase/firestore";
 
 firebase.initializeApp(firebaseConfig);
 
 export const auth = firebase.auth();
+
+export const firestore = firebase.firestore();
+
+export const FieldValue = firebase.FieldValue;
 
 const FirebaseContext = React.createContext();
 
