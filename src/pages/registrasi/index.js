@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import useStyles from "./styles";
 import logo from "../../images/logo.png";
+import isEmail from "validator/lib/isEmail";
+import { Redirect } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -10,8 +12,13 @@ import {
   Typography,
   Switch
 } from "@material-ui/core";
-import isEmail from "validator/lib/isEmail";
-import { auth, firestore, FieldValue } from "../../components/FirebaseProvider";
+
+import {
+  auth,
+  firestore,
+  FieldValue,
+  useFirebase
+} from "../../components/FirebaseProvider";
 
 export default function Registrasi() {
   const classes = useStyles();
@@ -24,6 +31,10 @@ export default function Registrasi() {
   });
 
   const [error, setError] = useState({});
+
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const { user } = useFirebase();
 
   const handleChange = (e) => {
     setForm({
@@ -63,6 +74,7 @@ export default function Registrasi() {
     if (Object.values(findErrors).some((message) => message !== "")) {
       setError(findErrors);
     } else {
+      setSubmitting(true);
       try {
         const { user } = await auth.createUserWithEmailAndPassword(
           form.email,
@@ -75,6 +87,7 @@ export default function Registrasi() {
         });
       } catch (e) {
         let newError = {};
+        console.log(e.message);
 
         switch (e.code) {
           case "auth/email-already-in-use":
@@ -96,10 +109,13 @@ export default function Registrasi() {
 
         setError(newError);
       }
+      setSubmitting(false);
     }
   };
 
-  console.log("error", error);
+  if (user) {
+    return <Redirect to="/chat" />;
+  }
 
   return (
     <div className={classes.daftarBlock}>
@@ -125,6 +141,7 @@ export default function Registrasi() {
                 onChange={handleChange}
                 error={error.nama ? true : false}
                 helperText={error.nama}
+                disabled={isSubmitting}
               />
               <TextField
                 id="email"
@@ -139,6 +156,7 @@ export default function Registrasi() {
                 onChange={handleChange}
                 error={error.email ? true : false}
                 helperText={error.email}
+                disabled={isSubmitting}
               />
               <TextField
                 id="password"
@@ -154,6 +172,7 @@ export default function Registrasi() {
                 onChange={handleChange}
                 error={error.password ? true : false}
                 helperText={error.password}
+                disabled={isSubmitting}
               />
               <TextField
                 id="ulangi_password"
@@ -169,6 +188,7 @@ export default function Registrasi() {
                 onChange={handleChange}
                 error={error.ulangi_password ? true : false}
                 helperText={error.ulangi_password}
+                disabled={isSubmitting}
               />
               <Grid container className={classes.buttons}>
                 <Grid item xs>
@@ -177,12 +197,17 @@ export default function Registrasi() {
                     type="submit"
                     variant="contained"
                     size="large"
+                    disabled={isSubmitting}
                   >
                     Daftar
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" size="large">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    disabled={isSubmitting}
+                  >
                     Login
                   </Button>
                 </Grid>
